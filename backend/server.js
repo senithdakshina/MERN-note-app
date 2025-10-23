@@ -1,25 +1,13 @@
-import expres from "express"
-// const expres = require("express")
-const app = expres()
+import express from "express";
+import noteRoutes from "./routes/noteRoutes.js";
 
-app.get("/api/notes",(req,res)=>{
-    res.status(200).send("you got 5 notes");
-})
+const app = express();
+app.use(express.json());
 
-app.post("/api/notes",(req,res)=>{
-    res.status(201).json({message:"Post created successfully!!"})
-})
+// Mount routes
+app.use("/api/notes", noteRoutes);
 
-app.put("/api/notes/:id",(req,res)=>{
-    res.status(200).json({message:"Post updated successfully!!"})
-})
-
-app.delete("/api/notes/:id",(req,res) =>{
-    res.status(200).json({message:"Post deleted successfully!!"})
-})
-
-
-
-app.listen(5001, () => {
-    console.log('server stated on PORT')
+const PORT = 5001;
+app.listen(PORT, () => {
+  console.log(`Server started on PORT ${PORT}`);
 });
