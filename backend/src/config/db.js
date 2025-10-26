@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-export const connectDb = async () => {
+export const connectDB = async () => {
     try{
         await mongoose.connect("mongodb+srv://senithdakshina_db_user:t7iHtRfRycdQg8EH@cluster0.bcjiz5c.mongodb.net/?appName=Cluster0");
         console.log("MogoDB is successfully connected!");
