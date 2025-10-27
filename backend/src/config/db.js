@@ -1,10 +1,17 @@
-import mongoose from "mongoose"
+// src/config/db.js
+import mongoose from "mongoose";
+
 export const connectDB = async () => {
-    try{
-        await mongoose.connect("mongodb+srv://senithdakshina_db_user:t7iHtRfRycdQg8EH@cluster0.bcjiz5c.mongodb.net/?appName=Cluster0");
-        console.log("MogoDB is successfully connected!");
-    }catch(error){
-        console.error("Error connecting MongoDB",error);
+  try {
+    const uri = process.env.MONGO_URI?.trim();
+    if (!uri) {
+      throw new Error("MONGO_URI is missing or empty.");
     }
-    
-}
+
+    await mongoose.connect(uri); // ✅ pass the URI here
+    console.log("MongoDB is successfully connected!");
+  } catch (error) {
+    console.error("Error connecting MongoDB:", error);
+    process.exit(1);
+  }
+};
