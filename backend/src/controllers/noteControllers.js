@@ -1,16 +1,16 @@
 export function getAllNotes(req, res)  {
-  res.status(200).send("You just fetch the notes!");
+  res.status(200).send("You just fetch the notes!!");
 }
 
 export function createNote(req, res){
-    res.status(201).json({message:"Note created successfully!"});
+    res.status(201).json({message:"Note created successfully!!"});
 
 }
 
 export function updateNote(req,res){
-    res.status(200).json({message :"Note updated successfully!"});
+    res.status(200).json({message :"Note updated successfully!!"});
 }
 
 export function deleteNote(req,res){
-    res.status(200).json({message :"Note deleted susccessfull!"})
+    res.status(200).json({message :"Note deleted susccessfull!!"})
 }
