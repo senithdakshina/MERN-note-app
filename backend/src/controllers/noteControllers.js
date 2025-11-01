@@ -13,21 +13,44 @@ export async function getAllNotes(req, res)  {
 export async function createNote(req, res){  
     try{
         const {title,content} = req.body
-        const newNote = new Note({title,content})
+        const newNote = new Note({title,content});
         await newNote.save()
-        res.status(201).json({message:"Note created successfully!!"})
+        res.status(201).json({message:"Note created successfully!!"});
     }catch(error){
-        console.error("Error in create note controller!!")
-        res.status(500).json({message:"INternal server error!!"})
+        console.error("Error in create note controller!!");
+        res.status(500).json({message:"INternal server error!!"});
     }
     
 
 }
 
-export function updateNote(req,res){
-    res.status(200).json({message :"Note updated successfully!!"});
+export async function updateNote(req,res){
+   try {
+    const {title,content} = req.body;
+    const updateNote = await Note.findByIdAndUpdate(req.params.id, {title,content},{new : true});
+    if(!updateNote) {
+       
+        return res.status(404).json({message:"Note not found"});
+    }
+
+    res.status(200).json({message:"Note Updated succrssfully!!"});
+
+}catch (error) {
+    console.error("Error Update Note!!!");
+    res.status(500).json({message:"Internal server Error!!!"});
+   }
 }
 
-export function deleteNote(req,res){
-    res.status(200).json({message :"Note deleted susccessfull!!"})
+export async function deleteNote(req,res){
+  try {
+    const deleteNote = await Note.findByIdAndDelete(req.params.id);
+    if (!deleteNote){
+        return res.status.Note(404).json({message: "Note not found!!"});
+        
+    }
+    res.status(200).json({message: "Note deleted successfuky"});
+  } catch (error) {
+    console.error("Error Deleted Notes!!")
+    req.json({message:"Noted deleted successfully!!"})
+  }
 }
