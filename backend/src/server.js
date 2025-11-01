@@ -10,7 +10,8 @@ const app = express();
 app.use(express.json());
 
 await connectDB();
-
+//middlewhere
+app.use(express.json())
 // Mount routes
 app.use("/api/notes", noteRoutes);
 
