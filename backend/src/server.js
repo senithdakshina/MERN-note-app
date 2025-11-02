@@ -10,7 +10,7 @@ import ratelimmiter from './middleware/reteLimitter.js';
 const app = express();
 app.use(express.json());
 
-await connectDB();
+
 
 //middlewhere
 app.use(express.json())
@@ -27,10 +27,13 @@ app.use((req,res,next)=> {
 
 // Mount routes
 app.use("/api/notes", noteRoutes);
-
-const PORT = 5001;
+connectDB().then(() =>{
+const PORT = 5001; 
 app.listen(PORT, () => {
   console.log(`Server started on PORT ${PORT}`);
   
 });
+});
+
+
 
