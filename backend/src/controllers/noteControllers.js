@@ -48,9 +48,20 @@ export async function deleteNote(req,res){
         return res.status.Note(404).json({message: "Note not found!!"});
         
     }
-    res.status(200).json({message: "Note deleted successfuky"});
+    res.status(200).json({message: "Note deleted successfully"});
   } catch (error) {
-    console.error("Error Deleted Notes!!")
-    req.json({message:"Noted deleted successfully!!"})
+    console.error("Error Deleted Notes!!");
+    req.json({message:"Noted deleted successfully!!"});
+  }
+}
+
+export async function getNoteById(req,res) {
+  try {
+    const note = await Note.findById(req.params.id);
+    if(!note) return res.status(404).json({message:"Note not found"});
+      res.json(note);
+  } catch (error) {
+    console.error("Error getting id base note!!");
+    req.status(500).json({message:"Internal serevr Error"})
   }
 }
