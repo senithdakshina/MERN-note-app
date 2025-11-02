@@ -8,7 +8,9 @@ import toast from 'react-hot-toast'
 const App = () => {
   return (
     <div>
-      <button onClick={() =>toast.success("ok!!!!")}></button>
+      <button onClick={() =>toast.success("ok!!!!")} className="text-red-500 p-4 bg-pink-300"></button>
+      <h1 className="text-3xl font-bold text-blue-600">Tailwind is working!</h1>
+
       <Routes>
 
         <Route path='/' element = {<HomePage />} />
