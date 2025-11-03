@@ -1,10 +1,12 @@
 import 'dotenv/config';
+import cors from "cors"
+import express from "express";
 console.log("Loaded MONGO_URI:", process.env.MONGO_URI ? "✅ Loaded" : "❌ Missing");
 
 import { connectDB } from "./config/db.js"
-import express from "express";
 import noteRoutes from "./routes/noteRoutes.js";
 import ratelimmiter from './middleware/reteLimitter.js';
+
 
 
 const app = express();
@@ -15,6 +17,9 @@ app.use(express.json());
 //middlewhere
 app.use(express.json())
 app.use(ratelimmiter)
+app.use(cors({
+  origin:"http://localhost:5173",
+}));
 app.use((req,res,next)=> {
 
   console.log(`Request method is ${req.method} & request URL is ${req.url}`);
