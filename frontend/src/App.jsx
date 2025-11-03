@@ -3,13 +3,16 @@ import { Route, Router, Routes } from 'react-router'
 import HomePage from './Pages/HomePage'
 import CreatePage from './Pages/CreatePage'
 import NoteDetailPage from './Pages/NoteDetailPage'
-import toast from 'react-hot-toast'
+// import toast from 'react-hot-toast'
 
 const App = () => {
   return (
-    <div>
-      <button onClick={() =>toast.success("ok!!!!")} className="text-red-500 p-4 bg-pink-300"></button>
-      <h1 className="text-3xl font-bold text-blue-600">Tailwind is working!</h1>
+    <div data-theme = "aqua">
+      <div className="p-10 bg-blue-500 text-white text-3xl">
+  Tailwind is working 🎉
+  <button className="btn btn-outline">button</button>
+</div>
+
 
       <Routes>
 
