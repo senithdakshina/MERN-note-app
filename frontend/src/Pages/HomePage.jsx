@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react'
 import NavBar from '../component/NavBar'
 import RateLimitUi from '../component/RateLimitUi';
 import axios from 'axios';
+import toast from 'react-hot-toast';
+import NoteCard from '../component/NoteCard';
 
 const HomePage = () => {
-  const [isRateLimited,IsSetRateLimited] = useState(true);
+  const [isRateLimited,SetIsRateLimited] = useState(false);
   const[notes,setNotes] = useState([])
   const[loading,setLoading] = useState(true)
 
@@ -16,8 +18,17 @@ const HomePage = () => {
           console.log(res.data)//for testing purpose
 
           setNotes(res.data);
+          SetIsRateLimited(false);
         } catch (error) {
           console.log("Error fetching notes!!")
+          console.log(error)
+          if(error.response?.status == 429) {
+            SetIsRateLimited(true);
+          }else{
+            toast.error("Fail to load Notes")
+          }
+        }finally{
+          setLoading(false);
         }
     };
 
@@ -27,6 +38,20 @@ const HomePage = () => {
     <div className='min-h-screen'>
       <NavBar></NavBar>
       {isRateLimited && <RateLimitUi></RateLimitUi>}
+      <div className='max-w-7xl max-auto p-4 mt-6'> 
+        {true&&<div className='text-center text-primary py-10' ></div>}
+
+        {notes.length > 0 && !isRateLimited && (
+          
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+            {notes.map(note =>(
+             <NoteCard key={note._id} note={note}></NoteCard>
+            ))}
+          </div>
+        )}
+
+      </div>
+
     </div>
   )
 }

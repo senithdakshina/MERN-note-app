@@ -15,15 +15,17 @@ app.use(express.json());
 
 
 //middlewhere
-app.use(express.json())
-app.use(ratelimmiter)
 app.use(cors({
   origin:"http://localhost:5173",
 }));
+
+app.use(express.json())
+app.use(ratelimmiter)
+
 app.use((req,res,next)=> {
 
   console.log(`Request method is ${req.method} & request URL is ${req.url}`);
-
+ 
   next();
 
 }); 
