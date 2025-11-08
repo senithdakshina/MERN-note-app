@@ -23,6 +23,8 @@ const __dirname = path.resolve()
 // }
 
 
+
+
 const allowedOrigins = [
   "http://localhost:5173",                  // local dev
   "https://mern-note-app-3.onrender.com"    // your deployed frontend
