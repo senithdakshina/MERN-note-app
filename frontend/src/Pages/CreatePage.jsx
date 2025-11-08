@@ -83,18 +83,33 @@ const CreatePage = () => {
                     onChange={(e) => setContent(e.target.value)}
                   ></textarea>
                 </div>
+             <div className="card-actions justify-end mt-4">
+  <button
+    type="submit"
+    disabled={loading}
+    className="
+      bg-blue-600 
+      hover:bg-blue-700 
+      text-white 
+      font-semibold 
+      py-2 
+      px-5 
+      rounded-lg 
+      transition-colors 
+      duration-200 
+      disabled:opacity-50 
+      disabled:cursor-not-allowed
+      shadow-md
+    "
+  >
+    {loading ? "Saving..." : "Save Changes"}
+  </button>
+</div>
 
-                <button
-                  type="submit"
-                  className="btn btn-primary w-full"
-                  disabled={loading}
-                >
-                  {loading ? "Saving..." : "Save Note"}
-                </button>
               </form>
             </div>
           </div>
-        </div> 
+        </div>
       </div>
     </div>
   );
