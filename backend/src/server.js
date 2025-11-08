@@ -22,6 +22,9 @@ const __dirname = path.resolve()
 // );
 // }
 
+
+
+
 const allowedOrigins = [
   "http://localhost:5173",                  // local dev
   "https://mern-note-app-3.onrender.com"    // your deployed frontend
@@ -53,7 +56,7 @@ if(process.env.NODE_ENV === "production"){
   app.use(express.static(path.join(__dirname,"../frontend/dist")))
 
 app.get("*",(req,res) => {
-  res.sedFile(path.join(__dirname,"../frontend","dist","index.html"));
+  res.sendFile(path.join(__dirname,"../frontend","dist","index.html"));
 });
 }
 connectDB().then(() =>{
