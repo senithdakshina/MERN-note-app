@@ -6,18 +6,22 @@ console.log("Loaded MONGO_URI:", process.env.MONGO_URI ? "✅ Loaded" : "❌ Mis
 import { connectDB } from "./config/db.js"
 import noteRoutes from "./routes/noteRoutes.js";
 import ratelimmiter from './middleware/reteLimitter.js';
-
+import path from "path"
 
 
 const app = express();
 app.use(express.json());
+const __dirname = path.resolve()
 
 
-
+if(process.env.NODE_ENV !== "production"){
 //middlewhere
 app.use(cors({
   origin:"http://localhost:5173",
-}));
+}) 
+);
+}
+
 
 app.use(express.json())
 app.use(ratelimmiter)
@@ -34,6 +38,13 @@ app.use((req,res,next)=> {
 
 // Mount routes
 app.use("/api/notes", noteRoutes);
+if(process.env.NODE_ENV === "production"){
+  app.use(express.static(path.join(__dirname,"../frontend/dist")))
+
+app.get("*",(req,res) => {
+  res.sedFile(path.join(__dirname,"../frontend","dist","index.html"));
+});
+}
 connectDB().then(() =>{
 const PORT = 5001; 
 app.listen(PORT, () => {

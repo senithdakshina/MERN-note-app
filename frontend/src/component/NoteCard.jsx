@@ -1,9 +1,26 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { PenSquareIcon, Trash2Icon } from "lucide-react";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-const NoteCard = ({ note, handleDelete }) => {
-  // ✅ Define the missing formatDate function
+const NoteCard = ({ note,setNotes }) => {
+
+  const handleDelete = async (e, id) => {
+    e.preventDefault();
+
+    if (!window.confirm("Are you sure you want to delete this note?")) return;
+
+    try {
+      await axios.delete(`http://localhost:5001/api/notes/${id}`);
+      setNotes((prev) => prev.filter((n) => n._id !== id));
+      toast.success("Note deleted successfully");
+    } catch (error) {
+      console.log("Error in handleDelete", error);
+      toast.error("Failed to delete note");
+    }
+  };
+
   const formatDate = (date) => {
     return date.toLocaleDateString("en-US", {
       year: "numeric",
