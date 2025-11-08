@@ -14,13 +14,24 @@ app.use(express.json());
 const __dirname = path.resolve()
 
 
-if(process.env.NODE_ENV !== "production"){
-//middlewhere
+// if(process.env.NODE_ENV !== "production"){
+// //middlewhere
+// app.use(cors({
+//   origin:"http://localhost:5173",
+// }) 
+// );
+// }
+
+const allowedOrigins = [
+  "http://localhost:5173",                  // local dev
+  "https://mern-note-app-3.onrender.com"    // your deployed frontend
+];
+
 app.use(cors({
-  origin:"http://localhost:5173",
-}) 
-);
-}
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
 
 
 app.use(express.json())
