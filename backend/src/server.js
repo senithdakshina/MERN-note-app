@@ -14,26 +14,26 @@ app.use(express.json());
 const __dirname = path.resolve()
 
 
-// if(process.env.NODE_ENV !== "production"){
-// //middlewhere
-// app.use(cors({
-//   origin:"http://localhost:5173",
-// }) 
-// );
-// }
-
-
-
-
-const allowedOrigins = [
-  "http://localhost:5173",                  // local dev
-  "https://notesync-z33z.onrender.com"    // your deployed frontend
-];
-
+if(process.env.NODE_ENV !== "production"){
+//middlewhere
 app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-}));
+  origin:"http://localhost:5173",
+}) 
+);
+}
+
+
+
+
+// const allowedOrigins = [
+//   "http://localhost:5173",                  // local dev
+//   "https://notesync-z33z.onrender.com"    // your deployed frontend
+// ];
+
+// app.use(cors({
+//   origin: allowedOrigins,
+//   credentials: true,
+// }));
 
 
 
@@ -59,6 +59,8 @@ app.get("*",(req,res) => {
   res.sendFile(path.join(__dirname,"../frontend","dist","index.html"));
 });
 }
+
+
 connectDB().then(() =>{
 const PORT = process.env.PORT ||5001; 
 app.listen(PORT, () => {
