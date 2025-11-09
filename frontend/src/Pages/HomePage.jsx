@@ -5,6 +5,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import NoteCard from '../component/NoteCard';
 import NotesNotFound from '../component/NoteNotFound';
+import api from '../lib/axios';
 
 const HomePage = () => {
   const [isRateLimited,SetIsRateLimited] = useState(false);
@@ -14,7 +15,7 @@ const HomePage = () => {
   useEffect(()=>{
     const fetchNotes = async () => {
         try {
-          const res = await axios.get("http://localhost:5001/api/notes")
+         const res = await api.get('/notes')
           const data = res.data;
           console.log(res.data)//for testing purpose
 
