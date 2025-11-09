@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { ArrowLeftIcon, LoaderIcon, Trash2Icon } from "lucide-react";
+import api from "../lib/axios";
 
 const NoteDetailPage = () => {
   const [note, setNote] = useState(null);
@@ -15,7 +16,7 @@ const NoteDetailPage = () => {
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this note?")) return;
     try {
-      await axios.delete(`http://localhost:5001/api/notes/${id}`);
+       await api.delete(`/notes/${id}`);
       toast.success("Note deleted successfully!");
       navigate("/");
     } catch (error) {
@@ -26,14 +27,19 @@ const NoteDetailPage = () => {
 
 
   const handleSave = async() =>{
-
-    if(!note.title.trim() || !note.content.trim()){
-      toast.error("Please add title or content before submitting!!!")
+    if (!note) return;
+    const title = (note.title || "").trim();
+    const content = (note.content || "").trim();
+    if (!title || !content) {
+      toast.error("Please add title and content before submitting!");
+      return;
     }
+
+  //  const res = await api.get(`/notes/${id}`);
     setSaving(true)
 
     try {
-      await axios.put(`http://localhost:5001/api/notes/${id}`,note);
+       await api.put(`/notes/${id}`, note);
       toast.success("Note edit successfully!!!")
       navigate("/");
     } catch (error) {
@@ -48,7 +54,7 @@ const NoteDetailPage = () => {
   useEffect(() => {
     const fetchNote = async () => {
       try {
-        const res = await axios.get(`http://localhost:5001/api/notes/${id}`);
+        const res = await api.get(`/notes/${id}`);
         setNote(res.data);
       } catch (error) {
         console.error("Error fetching note:", error);
