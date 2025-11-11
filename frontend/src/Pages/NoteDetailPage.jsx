@@ -16,17 +16,22 @@ const NoteDetailPage = () => {
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this note?")) return;
     try {
-       await api.delete(`/notes/${id}`);
+      await api.delete(`/notes/${id}`);
       toast.success("Note deleted successfully!");
       navigate("/");
     } catch (error) {
       console.error("Error deleting note:", error);
+      if (error.response?.status === 401) {
+        toast.error("Session expired. Please log in again.");
+        localStorage.removeItem("token");
+        navigate("/login");
+        return;
+      }
       toast.error("Failed to delete note");
     }
   };
 
-
-  const handleSave = async() =>{
+  const handleSave = async () => {
     if (!note) return;
     const title = (note.title || "").trim();
     const content = (note.content || "").trim();
@@ -35,36 +40,52 @@ const NoteDetailPage = () => {
       return;
     }
 
-  //  const res = await api.get(`/notes/${id}`);
-    setSaving(true)
+    //  const res = await api.get(`/notes/${id}`);
+    setSaving(true);
 
     try {
-       await api.put(`/notes/${id}`, note);
-      toast.success("Note edit successfully!!!")
+      await api.put(`/notes/${id}`, note);
+      toast.success("Note edit successfully!!!");
       navigate("/");
     } catch (error) {
-      toast.error("Eror editing data!!!")
-    }finally{
-      setSaving(false)
+      if (error.response?.status === 401) {
+    toast.error("Session expired. Please log in again.");
+    localStorage.removeItem("token");
+    navigate("/login");
+    return;
+  }
+      toast.error("Eror editing data!!!");
+    } finally {
+      setSaving(false);
     }
-
-
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
     const fetchNote = async () => {
       try {
         const res = await api.get(`/notes/${id}`);
         setNote(res.data);
       } catch (error) {
         console.error("Error fetching note:", error);
+        if (error.response?.status === 401) {
+          // ✅ handle expired token
+          toast.error("Session expired. Please log in again.");
+          localStorage.removeItem("token");
+          navigate("/login");
+          return;
+        }
         toast.error("Failed to load data");
       } finally {
         setLoading(false);
       }
     };
     fetchNote();
-  }, [id]);
+  }, [id, navigate]);
 
   if (loading) {
     return (

@@ -1,73 +1,58 @@
-import 'dotenv/config';
-import cors from "cors"
+// FILE: backend/src/server.js
+import "dotenv/config";
+import cors from "cors";
 import express from "express";
-console.log("Loaded MONGO_URI:", process.env.MONGO_URI ? "✅ Loaded" : "❌ Missing");
-
-import { connectDB } from "./config/db.js"
+import path from "path";
+import { connectDB } from "./config/db.js";
+import ratelimmiter from "./middleware/reteLimitter.js";
 import noteRoutes from "./routes/noteRoutes.js";
-import ratelimmiter from './middleware/reteLimitter.js';
-import path from "path"
-
+import authRoutes from "./routes/authRoutes.js"; // ✅ NEW
 
 const app = express();
+const __dirname = path.resolve();
+
+console.log("Loaded MONGO_URI:", process.env.MONGO_URI ? "✅ Loaded" : "❌ Missing");
+
+// JSON parsing
 app.use(express.json());
-const __dirname = path.resolve()
 
-
-if(process.env.NODE_ENV !== "production"){
-//middlewhere
-app.use(cors({
-  origin:"http://localhost:5173",
-}) 
-);
+// Enable CORS (dev only)
+if (process.env.NODE_ENV !== "production") {
+  app.use(
+    cors({
+      origin: "http://localhost:5173",
+    })
+  );
 }
 
+// Apply rate limiter
+app.use(ratelimmiter);
 
-
-
-// const allowedOrigins = [
-//   "http://localhost:5173",                  // local dev
-//   "https://notesync-z33z.onrender.com"    // your deployed frontend
-// ];
-
-// app.use(cors({
-//   origin: allowedOrigins,
-//   credentials: true,
-// }));
-
-
-
-app.use(express.json())
-app.use(ratelimmiter)
-
-app.use((req,res,next)=> {
-
-  console.log(`Request method is ${req.method} & request URL is ${req.url}`);
- 
+// Logging middleware
+app.use((req, res, next) => {
+  console.log(`Request method: ${req.method} | URL: ${req.url}`);
   next();
-
-}); 
-//middlewhere
-
-
-// Mount routes
-app.use("/api/notes", noteRoutes);
-if(process.env.NODE_ENV === "production"){
-  app.use(express.static(path.join(__dirname,"../frontend/dist")))
-
-app.get("*",(req,res) => {
-  res.sendFile(path.join(__dirname,"../frontend","dist","index.html"));
 });
+
+// ✅ Auth routes
+app.use("/api/auth", authRoutes);
+
+// ✅ Protected notes routes (auth applied inside)
+app.use("/api/notes", noteRoutes);
+
+// Serve frontend in production
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+  });
 }
 
-
-connectDB().then(() =>{
-const PORT = process.env.PORT ||5001; 
-app.listen(PORT, () => {
-  console.log(`Server started on PORT ${PORT}`);
-  
+// Connect DB & start server
+connectDB().then(() => {
+  const PORT = process.env.PORT || 5001;
+  app.listen(PORT, () => {
+    console.log(`✅ Server running on port ${PORT}`);
+  });
 });
-});
-
-
-
