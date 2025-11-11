@@ -6,13 +6,26 @@ import toast from 'react-hot-toast';
 import NoteCard from '../component/NoteCard';
 import NotesNotFound from '../component/NoteNotFound';
 import api from '../lib/axios';
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [isRateLimited,SetIsRateLimited] = useState(false);
   const[notes,setNotes] = useState([])
   const[loading,setLoading] = useState(true)
+  const navigate = useNavigate();
+
+  
 
   useEffect(()=>{
+
+    const token = localStorage.getItem("token"); // ✅ added
+    if(!token){
+      navigate("/login");
+      return;
+    }
+
+
+
     const fetchNotes = async () => {
         try {
          const res = await api.get('/notes')
@@ -26,7 +39,13 @@ const HomePage = () => {
           console.log(error)
           if(error.response?.status == 429) {
             SetIsRateLimited(true);
-          }else{
+          }else if (error.response?.status === 401) { // ✅ added
+            toast.error("Session expired. Please log in again.");
+            localStorage.removeItem("token");
+            navigate("/login");
+            return;
+          } 
+          else{
             toast.error("Fail to load Notes")
           }
         }finally{

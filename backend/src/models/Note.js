@@ -9,6 +9,12 @@ const noteSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
+    
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true, // ensures each note is linked to a specific user
+    },
 
 
 },

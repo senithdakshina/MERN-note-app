@@ -1,47 +1,59 @@
-import axios from 'axios';
-import { ArrowLeftIcon } from 'lucide-react';
-import React, { useState } from 'react';
-import toast from 'react-hot-toast';
-import { Link, useNavigate } from 'react-router-dom';
-import api from '../lib/axios';
+import axios from "axios";
+import { ArrowLeftIcon } from "lucide-react";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../lib/axios";
+import { useEffect } from "react";
+
+
+
 const CreatePage = () => {
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleSubmit = async(e) => {
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    navigate("/login");
+  }
+}, [navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log({ title, content });
-    
+
     // if(!title.trim() || !content.trim()){
     //   toast.error("All feild are required!!")
     //   return;
     // }
 
-    setLoading(true) 
+    setLoading(true);
     try {
-       await api.post('/notes', { title,content});
-      toast.success("Note created successfully!!")
+      await api.post("/notes", { title, content });
+      toast.success("Note created successfully!!");
       navigate("/");
     } catch (error) {
-      console.log("Error crating note ",error);
+      console.log("Error crating note ", error);
       // toast.error("Faild to craete note!!");
-      if(error.response.status === 429){
-        toast.error("Slow down!!!",{
-          duration:4000,
+      if (error.response.status === 429) {
+        toast.error("Slow down!!!", {
+          duration: 4000,
         });
-        
-      }else {
-  toast.error("Failed to create note!");
-}
-    }finally{
-      setLoading(false)
+      } else if (error.response?.status === 401) {
+        toast.error("Session expired. Please log in again.");
+        localStorage.removeItem("token");
+        navigate("/login");
+        return;
+      } else {
+        toast.error("Failed to create note!");
+      }
+    } finally {
+      setLoading(false);
     }
-
-
-
   };
 
   return (
@@ -83,11 +95,11 @@ const CreatePage = () => {
                     onChange={(e) => setContent(e.target.value)}
                   ></textarea>
                 </div>
-             <div className="card-actions justify-end mt-4">
-  <button
-    type="submit"
-    disabled={loading}
-    className="
+                <div className="card-actions justify-end mt-4">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="
       bg-blue-600 
       hover:bg-blue-700 
       text-white 
@@ -101,11 +113,10 @@ const CreatePage = () => {
       disabled:cursor-not-allowed
       shadow-md
     "
-  >
-    {loading ? "Saving..." : "Save Changes"}
-  </button>
-</div>
-
+                  >
+                    {loading ? "Saving..." : "Save Changes"}
+                  </button>
+                </div>
               </form>
             </div>
           </div>
