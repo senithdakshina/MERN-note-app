@@ -122,7 +122,7 @@ export default function Login() {
               {/* small footer / help */}
               <div className="mt-4 text-xs text-muted-foreground">
                 By logging in you accept the app terms. If you have issues,
-                contact the admin.
+                contact the admin cst21087@std.uwu.ac.lk
               </div>
             </div>
           </div>
